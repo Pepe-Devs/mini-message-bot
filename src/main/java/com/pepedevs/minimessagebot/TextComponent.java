@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 public class TextComponent {
@@ -16,7 +18,7 @@ public class TextComponent {
     private String color;
 
     @SerializedName("extra")
-    private List<TextComponent> extra;
+    private List<TextComponent> extra = new ArrayList<>();
 
     @SerializedName("text")
     private String text;
@@ -27,13 +29,15 @@ public class TextComponent {
     private boolean obfuscated;
     private boolean underlined;
 
-    public static TextComponent from(JsonObject jsonObject) {
+    public static TextComponent from(String jsonObject) {
         return GSON.fromJson(jsonObject, TextComponent.class);
     }
 
     private TextComponent() {}
 
     public Color getColor() {
+        if (this.color == null)
+            return null;
         return Utils.getColor(this.color);
     }
 
@@ -63,5 +67,23 @@ public class TextComponent {
 
     public boolean isUnderlined() {
         return underlined;
+    }
+
+    public EnumSet<Modifiers> getModifiers() {
+        EnumSet<Modifiers> set = EnumSet.noneOf(Modifiers.class);
+        if (this.bold) set.add(Modifiers.BOLD);
+        if (this.italic) set.add(Modifiers.ITALIC);
+        if (this.strikethrough) set.add(Modifiers.STRIKETHROUGH);
+        if (this.obfuscated) set.add(Modifiers.OBFUSCATED);
+        if (this.underlined) set.add(Modifiers.UNDERLINED);
+        return set;
+    }
+
+    public enum Modifiers {
+        BOLD,
+        ITALIC,
+        STRIKETHROUGH,
+        OBFUSCATED,
+        UNDERLINED;
     }
 }

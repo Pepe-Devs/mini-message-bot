@@ -1,5 +1,6 @@
 package com.pepedevs.minimessagebot;
 
+import com.google.gson.JsonElement;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
@@ -32,6 +33,10 @@ public class Converter {
 
     public static String fromMini(String input) {
         return GSON.serialize(MINI.deserialize(input));
+    }
+
+    public static JsonElement fromMiniToTree(String input) {
+        return GSON.serializeToTree(MINI.deserialize(input));
     }
 
 }
