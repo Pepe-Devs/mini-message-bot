@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group 'com.pepedevs'
+version '1.0'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'net.kyori:adventure-api:4.9.3'
+    implementation 'net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT'
+    implementation 'net.kyori:adventure-text-serializer-gson:4.9.3'
+    implementation 'net.kyori:adventure-text-serializer-legacy:4.9.3'
+    implementation 'net.kyori:text-serializer-gson:3.0.4'
+}
+
+shadowJar {
+    relocate 'net.kyori', 'com.pepedevs.minimessagebot.libraries'
+}
+
+build {
+    dependsOn shadowJar
+}
+
+shadowJar.shouldRunAfter build
+
