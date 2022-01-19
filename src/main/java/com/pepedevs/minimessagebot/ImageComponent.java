@@ -2,6 +2,7 @@ package com.pepedevs.minimessagebot;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -29,7 +30,7 @@ public class ImageComponent {
     }
 
     public void create(File file) {
-        this.iterate(this.text, this.text.getModifiers(), Color.WHITE, 500);
+        this.iterate(this.text, this.text.getModifiers(), Color.WHITE, 0);
         try {
             ImageIO.write(this.image, "jpg", file);
         } catch (IOException e) {
@@ -47,21 +48,17 @@ public class ImageComponent {
             clr = component.getColor();
         if (!component.getModifiers().isEmpty())
             mdfiers.addAll(component.getModifiers());
-        this.write(font, clr, component, x);
+        double width = this.write(font, clr, component, x);
+        this.length += width;
 
-        for (char c : component.getText().toCharArray()) {
-            DefaultFontInfo info = DefaultFontInfo.getDefaultFontInfo(c);
-            if (component.isBold())
-                length += info.getLength() * 40 * 1.2;
-            else
-                length += info.getLength() * 40;
-        }
+        this.length += FONT_SIZE / 10;
+
         for (TextComponent textComponent : component.getExtra()) {
             this.iterate(textComponent, mdfiers, clr, length);
         }
     }
 
-    private void write(Font font, Color color, TextComponent component, int x) {
+    private double write(Font font, Color color, TextComponent component, int x) {
         if (!component.getText().isEmpty()) {
             Graphics g = this.image.getGraphics();
 
@@ -73,9 +70,18 @@ public class ImageComponent {
             if (component.isUnderlined())
                 string.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
 
+            FontMetrics ruler = g.getFontMetrics(font);
+            GlyphVector vector = font.createGlyphVector(ruler.getFontRenderContext(), string.getIterator());
+            Shape outline = vector.getOutline(0, 0);
+            double expectedWidth = outline.getBounds().getWidth();
+
             g.drawString(string.getIterator(), x, 500);
             g.dispose();
+
+            return expectedWidth;
         }
+
+        return 0;
     }
 
     private Font getFont(EnumSet<TextComponent.Modifiers> modifiers) {
