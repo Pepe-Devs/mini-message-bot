@@ -7,13 +7,12 @@ import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.AttributedString;
 import java.util.EnumSet;
 
 public class ImageComponent {
 
-    public static final int FONT_SIZE = 200;
+    public static final int FONT_SIZE = 100;
 
     private final BufferedImage image;
     private final TextComponent text;
@@ -32,7 +31,7 @@ public class ImageComponent {
     public void create(File file) {
         this.iterate(this.text, this.text.getModifiers(), Color.WHITE, 0);
         try {
-            ImageIO.write(this.image, "jpg", file);
+            ImageIO.write(this.image, "png", file);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -43,15 +42,12 @@ public class ImageComponent {
     private void iterate(TextComponent component, EnumSet<TextComponent.Modifiers> modifiers, Color color, int x) {
         Color clr = color;
         EnumSet<TextComponent.Modifiers> mdfiers = EnumSet.copyOf(modifiers);
-        Font font = this.getFont(modifiers);
-        if (component.getColor() != null)
-            clr = component.getColor();
-        if (!component.getModifiers().isEmpty())
-            mdfiers.addAll(component.getModifiers());
+        if (component.getColor() != null) clr = component.getColor();
+        if (!component.getModifiers().isEmpty()) mdfiers.addAll(component.getModifiers());
+        Font font = this.getFont(mdfiers);
         double width = this.write(font, clr, component, x);
         this.length += width;
-
-        this.length += FONT_SIZE / 10;
+        this.length += this.write(font, color, TextComponent.empty(), length);
 
         for (TextComponent textComponent : component.getExtra()) {
             this.iterate(textComponent, mdfiers, clr, length);
@@ -65,10 +61,8 @@ public class ImageComponent {
             AttributedString string = new AttributedString(component.getText());
             string.addAttribute(TextAttribute.FONT, font);
             string.addAttribute(TextAttribute.FOREGROUND, color);
-            if (component.isStrikethrough())
-                string.addAttribute(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-            if (component.isUnderlined())
-                string.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+            if (component.isStrikethrough()) string.addAttribute(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+            if (component.isUnderlined()) string.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
 
             FontMetrics ruler = g.getFontMetrics(font);
             GlyphVector vector = font.createGlyphVector(ruler.getFontRenderContext(), string.getIterator());

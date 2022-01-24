@@ -1,18 +1,24 @@
 package com.pepedevs.minimessagebot;
 
-import java.io.File;
-import java.io.IOException;
-
 public class Main {
 
     public static void main(String[] args) {
-        TextComponent textComponent = TextComponent.from(Converter.fromMini("<red>bruh<yellow>idkok<reset><bold>ok"));
-        try {
-            ImageComponent image = new ImageComponent("img.png", textComponent);
-            image.create(new File("output.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        String token = null;
+        String guildID = null;
+
+        for (String arg : args) {
+            if (arg.startsWith("-token:")) token = arg.substring(7);
+            if (arg.startsWith("-guildID:")) guildID = arg.substring(9);
         }
+
+        if (token == null || guildID == null) {
+            throw new IllegalArgumentException("No token or guildID arguments!");
+        }
+
+        new DiscordHook(token).init(guildID);
+
+        System.out.println("BOT STARTED!!!");
     }
 
 }

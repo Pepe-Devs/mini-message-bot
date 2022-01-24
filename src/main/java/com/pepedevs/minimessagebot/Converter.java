@@ -35,6 +35,10 @@ public class Converter {
         return GSON.serialize(MINI.deserialize(input));
     }
 
+    public static String legacyToMini(String input) {
+        return MINI.serialize(LEGACY.deserialize(input));
+    }
+
     public static JsonElement fromMiniToTree(String input) {
         return GSON.serializeToTree(MINI.deserialize(input));
     }

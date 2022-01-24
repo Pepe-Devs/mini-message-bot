@@ -17,10 +17,17 @@ dependencies {
     implementation 'net.kyori:adventure-text-serializer-gson:4.9.3'
     implementation 'net.kyori:adventure-text-serializer-legacy:4.9.3'
     implementation 'net.kyori:text-serializer-gson:3.0.4'
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.4'
 }
 
 shadowJar {
     relocate 'net.kyori', 'com.pepedevs.minimessagebot.libraries'
+}
+
+jar {
+    manifest {
+        attributes["Main-Class"] = "com.pepedevs.minimessagebot.Main"
+    }
 }
 
 build {

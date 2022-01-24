@@ -2,7 +2,6 @@ package com.pepedevs.minimessagebot;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.awt.*;
@@ -23,14 +22,27 @@ public class TextComponent {
     @SerializedName("text")
     private String text;
 
+    @SerializedName("bold")
     private boolean bold;
+
+    @SerializedName("italic")
     private boolean italic;
+
+    @SerializedName("strikethrough")
     private boolean strikethrough;
+
+    @SerializedName("obfuscated")
     private boolean obfuscated;
+
+    @SerializedName("underlined")
     private boolean underlined;
 
     public static TextComponent from(String jsonObject) {
         return GSON.fromJson(jsonObject, TextComponent.class);
+    }
+
+    public static TextComponent empty() {
+        return new TextComponent();
     }
 
     private TextComponent() {}
