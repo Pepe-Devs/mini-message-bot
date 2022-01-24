@@ -8,15 +8,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class DiscordHook extends ListenerAdapter {
 
@@ -65,11 +61,11 @@ public class DiscordHook extends ListenerAdapter {
         } else if (event.getName().equals(this.viewCommand.getName())) {
             File output = new File(UUID.randomUUID() + ".png");
             try {
-                NewImageComponent image = new NewImageComponent("img.png",
+                ImageComponent image = new ImageComponent("img.png",
                         TextComponent.from(Converter.fromMini(event.getOption("text").getAsString())));
                 image.generateFile(output);
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             if (output.exists()) {
                 hook.editOriginal(output).queue(ignored -> output.delete(), ignored -> output.delete());
